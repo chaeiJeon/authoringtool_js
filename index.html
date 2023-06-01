@@ -8,8 +8,21 @@
     <title>Document</title>
   </head>
   <body>
-    <input type="file" name="load" id="file-input" />
-    <canvas id="three-canvas"></canvas>
+    <div>
+      <input type="file" name="load" id="file-input" />
+    </div>
+    <div id="exportOBJ-div" style="background-color: yellow">export obj</div>
+    <div style="height: 800px">
+      <canvas id="three-canvas"></canvas>
+    </div>
     <script src="static/src/bundle.js"></script>
+    <script type="module" src="./static/src/main.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+      integrity="sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
   </body>
 </html>

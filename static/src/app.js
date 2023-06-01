@@ -1,4 +1,12 @@
-import { AmbientLight, AxesHelper, DirectionalLight, GridHelper, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import {
+  AmbientLight,
+  AxesHelper,
+  DirectionalLight,
+  GridHelper,
+  PerspectiveCamera,
+  Scene,
+  WebGLRenderer,
+} from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { IFCLoader } from "web-ifc-three/IFCLoader";
 
@@ -74,15 +82,43 @@ window.addEventListener("resize", () => {
 
 // Sets up the IFC loading
 const ifcLoader = new IFCLoader();
-
 const input = document.getElementById("file-input");
 input.addEventListener(
   "change",
   (changed) => {
     const file = changed.target.files[0];
-	var ifcURL = URL.createObjectURL(file);
-	ifcLoader.ifcManager.setWasmPath("../wasm/");
-    ifcLoader.load(ifcURL, (ifcModel) => scene.add(ifcModel));
+    var ifcURL = URL.createObjectURL(file);
+    ifcLoader.ifcManager.setWasmPath("../wasm/");
+    ifcLoader.load(ifcURL, (ifcModel) => {
+      scene.add(ifcModel);
+      const { boxSize, boxCenter } = getCenterOfModel(ifcModel);
+
+      const maxBoxSize = Math.max(boxSize, 5);
+      const minBoxSize = Math.min(boxSize, 5);
+
+      camera.position.copy(boxCenter);
+      camera.position.x += maxBoxSize / 2.0; // Adjust as needed
+      camera.position.y += maxBoxSize / 5.0; // Adjust as needed
+      camera.position.z += maxBoxSize / 2.0; // Adjust as needed
+      camera.near = minBoxSize / 100.0; // Adjust as needed
+      camera.far = maxBoxSize * 100.0; // Adjust as needed
+      camera.updateProjectionMatrix();
+
+      controls.target.copy(boxCenter);
+      controls.maxDistance = maxBoxSize * 5;
+      controls.minDistance = minBoxSize / 5;
+      controls.update();
+    });
   },
   false
 );
+
+//Focus on Model
+const getCenterOfModel = (model) => {
+  console.log("getCenterOfModel");
+  const box = new THREE.Box3().setFromObject(model);
+  const boxSize = box.getSize(new THREE.Vector3()).length();
+  const boxCenter = box.getCenter(new THREE.Vector3());
+
+  return { boxSize, boxCenter };
+};
